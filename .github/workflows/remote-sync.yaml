@@ -2,6 +2,9 @@ name: Remote Dispatch Action Responder
 
 on: [repository_dispatch]
 
+env:
+  UPSTREAM_CLONE_DIR: /tmp/
+
 jobs:
   sync-docs:
     runs-on: ubuntu-latest
@@ -18,7 +21,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-      # - run: |
-      #     git clone --depth 1 \
-      #       "https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ env.UPSTREAM_REPO }}" \
-      #       ${{ env.UPSTREAM_CLONE_DIR }}
+      - run: |
+          git clone --depth 1 \
+            "https://${{ secrets.ACCESS_TOKEN }}@github.com/${{ github.event.client_payload.repo }}" \
+            "${{ env.UPSTREAM_CLONE_DIR }}/${{ github.event.client_payload.repo }}"
